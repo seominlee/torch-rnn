@@ -77,7 +77,7 @@ function LM:__init(kwargs)
   self.view2 = nn.View(1, -1):setNumInputDims(2)
 
   self.net:add(self.view1)
-  if self.model_type == 'gridgru'
+  if self.model_type == 'gridgru' then
     self.net:add(nn.Linear(D, V))
   else
     self.net:add(nn.Linear(H, V))
