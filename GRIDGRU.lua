@@ -48,7 +48,7 @@ function layer:reset(std)
     std = 1.0 / math.sqrt(self.hidden_dim + self.input_dim)
   end
   --self.bias:zero()
-  self.bias:normal(0,std) --self.bias[{{self.hidden_dim + 1, 2 * self.hidden_dim}}]:fill(1)
+  self.bias:normal(0,std) 
   self.weight:normal(0, std)
   return self
 end
