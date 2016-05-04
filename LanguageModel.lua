@@ -4,6 +4,7 @@ require 'nn'
 require 'VanillaRNN'
 require 'LSTM'
 require 'GRU'
+require 'GRIDGRU'
 
 local utils = require 'util.utils'
 
@@ -45,6 +46,8 @@ function LM:__init(kwargs)
       rnn = nn.LSTM(prev_dim, H)
     elseif self.model_type == 'gru' then
       rnn = nn.GRU(prev_dim, H)
+    elseif self.model_type == 'gridgru' then
+      rnn = nn.GRIDGRU(D, H)
     end
     rnn.remember_states = true
     table.insert(self.rnns, rnn)
@@ -74,7 +77,11 @@ function LM:__init(kwargs)
   self.view2 = nn.View(1, -1):setNumInputDims(2)
 
   self.net:add(self.view1)
-  self.net:add(nn.Linear(H, V))
+  if self.model_type == 'gridgru'
+    self.net:add(nn.Linear(D, V))
+  else
+    self.net:add(nn.Linear(H, V))
+  end
   self.net:add(self.view2)
 end
 
