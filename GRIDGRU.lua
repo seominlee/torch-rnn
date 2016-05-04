@@ -5,14 +5,7 @@ require 'nn'
 local layer, parent = torch.class('nn.GRIDGRU', 'nn.Module')
 
 --[[
-If we add up the sizes of all the tensors for output, gradInput, weights,
-gradWeights, and temporary buffers, we get that a SequenceGRU stores this many
-scalar values:
-
-NTD + 4NTH + 5NH + 6H^2 + 6DH + 7H
-
-Note that this class doesn't own input or gradOutput, so you'll
-see a bit higher memory usage in practice.
+Adapted from Grid LSTM : http://arxiv.org/abs/1507.01526
 --]]
 
 function layer:__init(input_dim, hidden_dim)
