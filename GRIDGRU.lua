@@ -321,6 +321,7 @@ function layer:accGradParameters(input, gradOutput, scale)
 end
 
 function layer:clearState()
+  self.cell:set()
   self.gates:set()
   self.buffer1:set()
   self.buffer2:set()
