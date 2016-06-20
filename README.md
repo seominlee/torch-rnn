@@ -1,3 +1,7 @@
+This is forked version of jcjohnson's [torch-rnn](https://github.com/jcjohnson/torch-rnn). Following changes were introduced:
+
+* Implemented Pyphen-based syllabic prediction (thanks to [dreavjr](https://github.com/dreavjr) for his PyHyphen syllabic prediction implementation, on which I've based mine).
+
 # torch-rnn
 torch-rnn provides high-performance, reusable RNN and LSTM modules for torch7, and uses these modules for character-level
 language modeling similar to [char-rnn](https://github.com/karpathy/char-rnn).
