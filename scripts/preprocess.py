@@ -40,6 +40,18 @@ if __name__ == '__main__':
   else : 
       syllabic = True
 
+      def detectDictionaryFallback(language):
+        if not (language in pyphen.LANGUAGES) :
+          fallback = pyphen.language_fallback(language)
+          if fallback is None:
+            print 'Syllabic dictionary', language, 'is unavailable'
+            sys.exit(0)
+          else:
+            print 'Warning: dictionary', language, 'is unavailable, using', fallback, 'as fallback'
+            language = fallback
+          return language
+	return language
+
       import unicodedata
       import pyphen
       primary = pyphen.Pyphen(lang=detectDictionaryFallback(args.syllabic))
@@ -104,17 +116,6 @@ if __name__ == '__main__':
           syls.append(word[lastidx:])
           return syls
           
-      def detectDictionaryFallback(language):
-        if not (language in pyphen.LANGUAGES) :
-          fallback = pyphen.language_fallback(language)
-          if fallback is None:
-            print 'Syllabic dictionary', language, 'is unavailable'
-            sys.exit(0)
-          else:
-            print 'Warning: dictionary', language, 'is unavailable, using', fallback, 'as fallback'
-            language = fallback
-          return language
-
       token_to_idx = { u'\n' : 1 }
       total_size = 0
       scanSyllables(args.input_txt, args.encoding, createVocab)
