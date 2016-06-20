@@ -14,7 +14,8 @@ parser.add_argument('--output_json', default='data/tiny-shakespeare.json')
 parser.add_argument('--val_frac', type=float, default=0.1)
 parser.add_argument('--test_frac', type=float, default=0.1)
 parser.add_argument('--quiet', action='store_true')
-parser.add_argument('--syllabic', default='none')
+parser.add_argument('--syllabic', default='en_US')
+parser.add_argument('--syllsec', default='en_US')
 parser.add_argument('--encoding', default='utf-8')
 args = parser.parse_args()
 
@@ -47,10 +48,10 @@ if __name__ == '__main__':
 	  print 'Warning: dictionary', args.syllabic, 'is unavailable, using', fallback, 'as fallback'
 	  args.syllabic = fallback
       primary = pyphen.Pyphen(lang=args.syllabic)
-      if args.syllabic == 'en_US':
+      if args.syllabic == args.syllsec or args.syllsec == 'none':
 	secondary = None
       else:
-	secondary = pyphen.Pyphen(lang='en_US')
+	secondary = pyphen.Pyphen(lang=args.syllsec)
 
       def scanSyllables(stream, encoding, processing) : 
         word = ''
