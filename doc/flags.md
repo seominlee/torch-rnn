@@ -8,7 +8,10 @@ The preprocessing script `scripts/preprocess.py` accepts the following command-l
 - `--val_frac`: What fraction of the data to use as a validation set; default is `0.1`.
 - `--test_frac`: What fraction of the data to use as a test set; default is `0.1`.
 - `--quiet`: If you pass this flag then no output will be printed to the console.
+- `--syllabic`: Predict syllables instead of letters. You must specify a dictionary (e.g., `en_US`) for syllable separation.
+- `--syllsec`: Use secondary hyphenator. Useful for bilingual texts. You must specify a dictionary (e.g., `ru_RU`) for syllable separation.
 
+Syllabic prediction transforms the input file: all letters are converted to lower-case, spaces are conflated, and all characters other than letters, numerals, punctuation, and newlines are ignored. The input is assumed as Unicode, and Unicode General Category is employed to decide the type of character.
 
 # Training
 The training script `train.lua` accepts the following command-line flags:

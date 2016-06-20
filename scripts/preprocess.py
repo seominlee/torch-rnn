@@ -14,8 +14,8 @@ parser.add_argument('--output_json', default='data/tiny-shakespeare.json')
 parser.add_argument('--val_frac', type=float, default=0.1)
 parser.add_argument('--test_frac', type=float, default=0.1)
 parser.add_argument('--quiet', action='store_true')
-parser.add_argument('--syllabic', default='en_US')
-parser.add_argument('--syllsec', default='en_US')
+parser.add_argument('--syllabic', default='none')
+parser.add_argument('--syllsec', default='none')
 parser.add_argument('--encoding', default='utf-8')
 args = parser.parse_args()
 
@@ -25,6 +25,9 @@ if __name__ == '__main__':
 
   # First go the file once to see how big it is and to build the vocab
   if args.syllabic == 'none' :
+    if args.syllsec != 'none':
+      print 'Error: Secondary hyphenator specified with syllabic prediction disabled'
+      sys.exit(0)
     syllabic = False
     token_to_idx = {}
     total_size = 0
@@ -39,19 +42,11 @@ if __name__ == '__main__':
 
       import unicodedata
       import pyphen
-      if not (args.syllabic in pyphen.LANGUAGES) :
-	fallback = pyphen.language_fallback(args.syllabic)
-	if fallback is None:
-          print 'Syllabic dictionary', args.syllabic, 'is unavailable'
-          sys.exit(0)
-        else:
-	  print 'Warning: dictionary', args.syllabic, 'is unavailable, using', fallback, 'as fallback'
-	  args.syllabic = fallback
-      primary = pyphen.Pyphen(lang=args.syllabic)
+      primary = pyphen.Pyphen(lang=detectDictionaryFallback(args.syllabic))
       if args.syllabic == args.syllsec or args.syllsec == 'none':
-	secondary = None
+        secondary = None
       else:
-	secondary = pyphen.Pyphen(lang=args.syllsec)
+        secondary = pyphen.Pyphen(lang=detectDictionaryFallback(args.syllsec))
 
       def scanSyllables(stream, encoding, processing) : 
         word = ''
@@ -65,14 +60,14 @@ if __name__ == '__main__':
                   space = False
                   continue
               if len(word)>0 :
-		  splits = primary.positions(word.lower())
-		  if secondary:
-		    secsplits = secondary.positions(word.lower())
-		  else:
-		    secsplits = []
-		  if len(secsplits) > len(splits):
-		    splits = secsplits
-		  syls = splitWord(word.lower(), splits)
+                  splits = primary.positions(word.lower())
+                  if secondary:
+                    secsplits = secondary.positions(word.lower())
+                  else:
+                    secsplits = []
+                  if len(secsplits) > len(splits):
+                    splits = secsplits
+                  syls = splitWord(word.lower(), splits)
                   word = ''
               else :
                   syls = [ ]
@@ -96,19 +91,29 @@ if __name__ == '__main__':
           token_to_idx[syl] = len(token_to_idx) + 1
       
       def splitWord(word, splits) :
-	if len(splits) == 0:
-	  return [word]
-	else:
-	  firstidx = 0
-	  lastidx = 0
-	  syls = []
-	  while splits:
-	    firstidx = lastidx
-	    lastidx = splits.pop(0)
-	    syls.append(word[firstidx:lastidx])
-	  syls.append(word[lastidx:])
-	  return syls
-	    
+        if len(splits) == 0:
+          return [word]
+        else:
+          firstidx = 0
+          lastidx = 0
+          syls = []
+          while splits:
+            firstidx = lastidx
+            lastidx = splits.pop(0)
+            syls.append(word[firstidx:lastidx])
+          syls.append(word[lastidx:])
+          return syls
+          
+      def detectDictionaryFallback(language):
+        if not (language in pyphen.LANGUAGES) :
+          fallback = pyphen.language_fallback(language)
+          if fallback is None:
+            print 'Syllabic dictionary', language, 'is unavailable'
+            sys.exit(0)
+          else:
+            print 'Warning: dictionary', language, 'is unavailable, using', fallback, 'as fallback'
+            language = fallback
+          return language
 
       token_to_idx = { u'\n' : 1 }
       total_size = 0
