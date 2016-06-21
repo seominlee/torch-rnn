@@ -3,6 +3,7 @@ This is forked version of jcjohnson's [torch-rnn](https://github.com/jcjohnson/t
 * Implemented Pyphen-based syllabic prediction (thanks to [dreavjr](https://github.com/dreavjr) for his PyHyphen syllabic prediction implementation, on which I've based mine).
 * Included [maraoz's](https://github.com/maraoz) changes to support UTF-8 encoded -start_text.
 * Included [ChrisCummins](https://github.com/ChrisCummins) and [maraoz's](https://github.com/maraoz) patch for sample streaming.
+* Included [guillitte's](https://github.com/guillitte) GRU cells implementation.
 
 # torch-rnn
 torch-rnn provides high-performance, reusable RNN and LSTM modules for torch7, and uses these modules for character-level
